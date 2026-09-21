@@ -37,41 +37,7 @@ pip install .                                        # installs the `phishscope`
 Exit code is `1` when any URL scores MEDIUM or above, so you can drop it into
 a CI job or a shell script that gates on the result.
 
-## What it checks
 
-Seventeen heuristics, each with a weight; the score is the clamped sum.
-
-- **Brand impersonation** — a known brand appearing as a subdomain
-  (`paypal.com.evil.tk`) or glued into a domain label (`secure-paypal.tk`).
-  Brand list covers the usual global set plus Indian fintech and government
-  services (Paytm, PhonePe, HDFC, Aadhaar, IRCTC...), which most Western
-  tools skip.
-- **Homoglyphs** — digit substitutions (`paypa1.com`) and Unicode lookalikes
-  (`pаypаl.com` with a Cyrillic а) fold to the real spelling before matching.
-- **URL anatomy tricks** — `@` userinfo (`https://paypal.com@evil.tk/`),
-  punycode hosts (`xn--…`), bare IP addresses, deep subdomain stacks,
-  suspiciously long hostnames.
-- **Context** — abuse-prone TLDs (.tk, .xyz, ...), URL shorteners, executable
-  downloads (`.apk`, `.exe`, ...), scam-keyword phrasing (`kyc-update`,
-  `verify-account`, `free-recharge`, ...).
-
-Verdict bands: CLEAN 0–9, LOW 10–19, MEDIUM 20–39, HIGH 40–69, CRITICAL 70+.
-`localhost` and `127.x` are exempt from the TLS/port warnings so local
-development doesn't produce noise.
-
-`--explain` prints the reason behind every flag; that's the point of the
-tool. The full weight table lives in `phishscope/analyzer.py`.
-
-## As a library
-
-```python
-from phishscope import analyze
-
-report = analyze("https://paypa1.com/login")
-print(report.score, report.verdict)   # 45 HIGH
-for flag in report.flags:
-    print(flag.weight, flag.name, flag.why)
-```
 
 ## Project layout
 
