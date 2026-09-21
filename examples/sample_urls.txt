@@ -1,0 +1,12 @@
+# Sample URLs for demo purposes. NONE of these are live malicious links —
+# they are synthetic examples that demonstrate each heuristic.
+https://www.paypal.com/signin
+https://www.paytm.co.in/offer
+paypa1.com
+https://paypal.com.evil.tk/verify
+https://hdfcbank.kyc-update.tk/login
+http://203.0.113.9/files/kyc-update.apk
+https://paypal.com@evil-example.tk/login
+https://xn--pypal-4ve.com/login
+https://bit.ly/3xYzAbc
+https://secure-login-verify.xyz/account/unlock

@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: unit tests (${{ matrix.os }}, py${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run test suite
+        run: python -m unittest discover -s tests -v
+      - name: Smoke-test the CLI
+        run: |
+          python -m phishscope paypa1.com && exit 1 || true
+          python -m phishscope -q https://www.paypal.com/signin
+
+  linux-distros:
+    name: zero-install on ${{ matrix.distro }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        distro:
+          - debian:bookworm-slim
+          - ubuntu:24.04
+          - fedora:latest
+          - archlinux:base
+          - rockylinux:9
+          - opensuse/leap:latest
+    container: ${{ matrix.distro }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install python3 where the base image lacks it
+        shell: sh
+        run: |
+          set -e
+          if command -v apt-get >/dev/null 2>&1; then
+            apt-get update && apt-get install -y --no-install-recommends python3
+          elif command -v dnf >/dev/null 2>&1; then
+            dnf install -y python3
+          elif command -v yum >/dev/null 2>&1; then
+            yum install -y python3
+          elif command -v pacman >/dev/null 2>&1; then
+            pacman -Sy --noconfirm python
+          elif command -v zypper >/dev/null 2>&1; then
+            zypper --non-interactive install python3
+          else
+            echo "No known package manager; assuming python3 is present."
+          fi
+      - name: Run the standalone CLI (no git, no pip, no install)
+        shell: sh
+        run: |
+          set -e
+          python3 --version
+          python3 ./phishscope.py --version
+          python3 ./phishscope.py -q https://www.paypal.com/signin
+          python3 ./phishscope.py paypa1.com && exit 1 || test $? -eq 1
+          echo "${{ matrix.distro }}: OK"
