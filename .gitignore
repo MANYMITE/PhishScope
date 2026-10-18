@@ -31,3 +31,30 @@ desktop.ini
 /Voicemeeter/
 /s.c
 /.freebuff/
+
+# Many more unrelated local items — personal files that must not enter PhishScope
+/Custom Office Templates/
+/Rockstar Games/
+/JOSH/
+/calc/
+/evs/
+/fic102/
+/notes_out/
+/projectsclaude/
+/mark-lv/
+/Mark-LV/
+/munder-difflin-hires/
+/phishguard/
+console-preview.html
+/server.pid
+/*.pdf
+/*.pptx
+/*.mp4
+/*.jpeg
+
+# MANYMITE AI stack docs & tooling (separate project; README-AI-STACK.md contains credentials)
+README-AI-STACK.md
+MANYMITE-AI-API-CONTRACT.md
+tools/owui_*.py
+tools/pollinations_adapter.py
+tools/ap_build_*.mjs
